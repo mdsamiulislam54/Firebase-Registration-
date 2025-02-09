@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { createContext } from 'react'
-import {getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+import {getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
 
 import app from '../firebase/firebase'
 
@@ -15,11 +15,33 @@ const UserContext = ({children}) => {
         const  auth = getAuth(app)
         return createUserWithEmailAndPassword(auth,email,password);
     }
+    const LoginUser = (email,password)=>{
+        const auth = getAuth(app)
+        return signInWithEmailAndPassword(auth,email,password)
+    }
 const Userinfo =(profile)=>{
     setUser(profile)
 }
+useEffect(()=>{
+    const auth = getAuth(app)
+    onAuthStateChanged(auth , (user) => {
+        if (user) {
+            setUser({
+                name: user.displayName,
+                email: user.email,
+                photo: user.photoURL,
+                uid :  user.uid
+            })
+        }else{
+            setUser('')
+        }
+    })
+},[])
 
-const UserinformationData = {user,registerUser,Userinfo}
+
+
+
+const UserinformationData = {user,registerUser,Userinfo,LoginUser}
 
   return (
    <UserinfoContext.Provider value={UserinformationData}>

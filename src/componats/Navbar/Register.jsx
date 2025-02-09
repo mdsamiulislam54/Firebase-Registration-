@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { AiFillGoogleSquare } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
 import { UserinfoContext } from "../../Contexts/UserContext";
-import { updateProfile } from "firebase/auth";
+import { sendEmailVerification, updateProfile } from "firebase/auth";
 import app  from "../../firebase/firebase.js";
 import { getAuth ,signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
@@ -55,7 +55,7 @@ const Register = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         setScessfull("Registration Sucessfully!")
-        navigate('/signin')
+        
         updateProfile(user, {
           displayName: `${fastName} ${lastName}`,
 
@@ -63,11 +63,19 @@ const Register = () => {
           Userinfo({
             email: user.email,
             name : user.displayName,
-            uid: user.uid
+            uid: user.uid,
+            photo : user.photoURL,
+            vreifyd : user.emailVerifie
   
           })
         })
-
+        sendEmailVerification(user).then((result)=>{
+          console.log(result)
+          setScessfull("Pleace verification your email")
+        })
+          setTimeout(() => {
+        navigate('/signin');
+      }, 4000);
         from.reset()
        
       })

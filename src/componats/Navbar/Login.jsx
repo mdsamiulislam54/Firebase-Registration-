@@ -1,26 +1,31 @@
-import  {useContext} from 'react'
+import  {useContext,useState} from 'react'
 import {Link} from 'react-router'
 import { AiFillGoogleSquare } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
-import { getAuth, signInWithEmailAndPassword,updateProfile ,signInWithPopup, GoogleAuthProvider  } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword,updateProfile ,signInWithPopup, GoogleAuthProvider,sendPasswordResetEmail   } from "firebase/auth";
 import { UserinfoContext } from "../../Contexts/UserContext";
 
 import app  from "../../firebase/firebase.js";
 import { useNavigate }  from "react-router";
 
 const Login = () => {
-const {Userinfo} = useContext(UserinfoContext)
+const {Userinfo,LoginUser} = useContext(UserinfoContext)
+const [errormsg , seterrormsg] = useState("");
+const [email , setEmail] = useState("");
+
 
 const navigate = useNavigate()
 
 
 
   const signInHandle =(e)=>{
+    e.preventDefault()
     const email = e.target.email.value;
     const password = e.target.password.value;
-    e.preventDefault()
-    const auth = getAuth(app);
-    signInWithEmailAndPassword(auth, email, password)
+    setEmail(email)
+
+    
+    LoginUser( email, password)
     .then((res)=>{
       console.log("signed in");
       const user = res.user;
@@ -28,7 +33,7 @@ const navigate = useNavigate()
       
       navigate("/")
       updateProfile(user, {
-        displayName: `${fastName} ${lastName}`,
+       
 
       }).then(()=>{
         Userinfo({
@@ -40,7 +45,7 @@ const navigate = useNavigate()
       })
       
     }).catch((err)=>{
-      console.log(err);
+      seterrormsg("Invilde Password")
     })
   }
 
@@ -55,25 +60,34 @@ const navigate = useNavigate()
       navigate('/')
       updateProfile(user, {
         
-        email: user.email,
-        uid : user.uid,
-        photoURL : user.photoURL
+        displayName: user.displayName,
+        
 
       })
       Userinfo({
         email: user.email,
         name : user.displayName,
         uid: user.uid,
-        photo : user.photoURL
+        photo : user.photoURL,
+        vreifyd : user.emailVerifie
       })
     }).catch((err)=>{
-      console.log(err);
+      seterrormsg("Invilde Password")
      
 
     })
   }
 
-
+const resetpassword = ()=>{
+  
+  const auth = getAuth(app);
+  sendPasswordResetEmail(auth,email)
+  .then((result)=>{
+    seterrormsg("Password Reset Email Sent")
+  }).then((err)=>{
+    seterrormsg("Error",err)
+  })
+}
 
 
 
@@ -82,15 +96,16 @@ const navigate = useNavigate()
     <div>
         <form onSubmit={signInHandle} action="" className='w-1/2 mx-auto bg-gray-800 mt-10 p-10 text-white shadow-2xl rounded-2xl'>
             <h1 className='text-center text-xl font-bold mb-6'>Login</h1>
-            <input type="email" name='email' placeholder="Enter Your Email" className="w-full p-2 mb-6 border-1 rounded-2xl"></input>
+            <input onChange={(e)=> setEmail(e.target.value)} type="email"  name='email' placeholder="Enter Your Email" className="w-full p-2 mb-6 border-1 rounded-2xl" ></input>
             <input type="password" name='password' placeholder="Enter Your Password......." className="w-full p-2 mb-6 border-1 rounded-2xl"></input>
+            <p className="text-red-400 font-light">{errormsg}</p>
             <div className='flex justify-between items-center '>
             
             <div>
                 <input type="checkbox" name="" id="checkbox" className='mx-2'/>
                 <label className='text-sky-300 hover:text-sky-500' for="checkbox">Show Pasword</label>
             </div>
-            <li className='list-none text-sky-300 hover:text-sky-500 mb-6 hover:underline'><Link>Forgot Password</Link></li>
+            <li onClick={resetpassword} className='list-none text-sky-300 hover:text-sky-500 mb-6 hover:underline'><Link>Forgot Password</Link></li>
             </div>
             <input type="submit" value="Login" className='w-full bg-white px-4 py-2 text-black rounded-2xl cursor-pointer mb-10' />
             <div className='flex justify-center items-center space-x-4 mb-6'>
