@@ -11,9 +11,10 @@ const UserProfile = () => {
         {
             user && (
                 <div>
+                    <img src={user.photo} alt="" />
                     <h2 className='text-3xl font-bold my-5'>Username: {user.name}</h2>
                     <h2 className='text-3xl font-bold my-5'>Username: {user.email}</h2>
-                    <h2 className='text-3xl font-bold my-5'>Username: {user.uid}</h2>
+                    <h2 className='text-3xl font-bold my-5'>Uid: {user.uid}</h2>
                 </div>
             )
         }

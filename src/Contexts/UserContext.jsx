@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { createContext } from 'react'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../firebase/firebase'
+import {getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+
+import app from '../firebase/firebase'
+
 
 
 
@@ -10,6 +12,7 @@ export const UserinfoContext = createContext()
 const UserContext = ({children}) => {
     const [user, setUser] = useState(null)
     const registerUser = (email, password) => {
+        const  auth = getAuth(app)
         return createUserWithEmailAndPassword(auth,email,password);
     }
 const Userinfo =(profile)=>{

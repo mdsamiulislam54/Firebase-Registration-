@@ -4,7 +4,8 @@ import { AiFillGoogleSquare } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
 import { UserinfoContext } from "../../Contexts/UserContext";
 import { updateProfile } from "firebase/auth";
-import { Navigate } from "react-router";
+import app  from "../../firebase/firebase.js";
+import { getAuth ,signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const Register = () => {
   const { registerUser, Userinfo,user } = useContext(UserinfoContext);
@@ -50,8 +51,6 @@ const Register = () => {
     }
 
 
-
-
     registerUser(email, confirmPassword)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -78,13 +77,42 @@ const Register = () => {
       });
   };
 
+  const handleGoogle = () => {
+    const auth = getAuth(app);
+    const Googleprovider = new GoogleAuthProvider();
+    signInWithPopup(auth, Googleprovider)
+    .then((userCredential)=>{
+      const user = userCredential.user;
+      console.log(user);
+      setScessfull("Registration Sucessfully!")
+      navigate('/')
+      // updateProfile(user, {
+        
+      //   email: user.email,
+      //   uid : user.uid,
+      //   photoURL : user.photoURL
+
+      // })
+      Userinfo({
+        email: user.email,
+        name : user.displayName,
+        uid: user.uid,
+        photo : user.photoURL
+      })
+    }).catch((err)=>{
+      console.log(err);
+      setError('Registration fiald already create a account' )
+
+    })
+  }
+
   return (
-    <div>
+    <div className="w-1/2 mx-auto relative bg-gray-800  shadow-2xl text-white">
       <form
         ref={fromClear}
         onSubmit={formhandle}
         action=""
-        className=" relative w-1/2 mx-auto bg-gray-800 mt-10 p-10 text-white shadow-2xl rounded-2xl"
+        className="    mt-10 p-10 text-white  rounded-2xl"
       >
         <h1 className="text-center text-xl font-bold mb-6">Sign Up</h1>
         <div className="flex gap-3">
@@ -145,7 +173,9 @@ const Register = () => {
           value="Sign Up"
           className="w-full bg-white px-4 py-2 text-black rounded-2xl cursor-pointer mb-10"
         />
-        <div className="absolute left-0 w-full  top-0 ">
+       
+      </form>
+      <div className="absolute left-0 w-full  top-0 ">
         {
           sucessfull && (
             <p className="text-center py-3 text-teal-400 bg-gray-700 text-2xl">{sucessfull}</p>
@@ -159,12 +189,12 @@ const Register = () => {
         </div>
         {/* submit button */}
         <div className="flex justify-center items-center space-x-4 mb-6">
-          <hr className="w-1/4" />
-          <p>Or</p>
+          <hr className="w-1/4 bg-white" />
+          <p >Or</p>
           <hr className="w-1/4" />
         </div>
         <div className="flex flex-col justify-around items-center gap-5 mb-6">
-          <button className="  flex items-center gap-3 px-4 py-2 bg-white text-black font-bold rounded-2xl cursor-pointer ">
+          <button onClick={handleGoogle} className="  flex items-center gap-3 px-4 py-2 bg-white text-black font-bold rounded-2xl cursor-pointer ">
             <AiFillGoogleSquare size={30} /> <span>SignInWithGoogle</span>
           </button>
           <button className="  flex items-center gap-3 px-4 py-2 bg-white text-black font-bold rounded-2xl cursor-pointer">
@@ -180,7 +210,6 @@ const Register = () => {
             Sign In
           </Link>
         </div>
-      </form>
     </div>
   );
 };
