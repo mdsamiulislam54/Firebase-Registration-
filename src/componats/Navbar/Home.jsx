@@ -1,8 +1,11 @@
 import React from 'react'
+import UserProfile from '../UserProfile'
 
 const Home = () => {
   return (
-    <div>This is home page</div>
+    <div>
+      <UserProfile/>
+    </div>
   )
 }
 

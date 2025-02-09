@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router";
 import { AiFillGoogleSquare } from "react-icons/ai";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { FaGithub } from "react-icons/fa";
-import { auth } from "../../firebase/firebase";
+import { UserinfoContext } from "../../Contexts/UserContext";
+import { updateProfile } from "firebase/auth";
 
 const Register = () => {
-  const [profile, setProfile] = React.useState();
+  const { registerUser, Userinfo,user } = useContext(UserinfoContext);
+  // const {registerUser }= userInfo
+  console.log(user);
+
+  console.log(registerUser);
   const formhandle = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -14,20 +18,22 @@ const Register = () => {
     const fastName = e.target.fastName.value;
     const lastName = e.target.lastName.value;
     const confirmPassword = e.target.confirmPassword.value;
-    console.log(email, password, fastName, lastName, confirmPassword);
-    createUserWithEmailAndPassword(auth, email, confirmPassword, fastName)
+
+    registerUser(email, confirmPassword)
       .then((userCredential) => {
         const user = userCredential.user;
         updateProfile(user, {
           displayName: `${fastName} ${lastName}`,
-        })
-          .then(() => {
-            console.log(user);
-            setProfile(user);
+
+        }).then(()=>{
+          Userinfo({
+            email: user.email,
+            name : user.displayName,
+            uid: user.uid
+  
           })
-          .catch((err) => {
-            console.log("profile error", err);
-          });
+        })
+       
       })
       .catch((err) => {
         console.log(err);
@@ -37,16 +43,6 @@ const Register = () => {
 
   return (
     <div>
-      <div>
-        {profile && 
-          <div>
-            <h1>Register info</h1>
-            <h1>Username: {profile.displayName}</h1>
-            <h1>email: {profile.email}</h1>
-          </div>
-        }
-      </div>
-
       <form
         onSubmit={formhandle}
         action=""
