@@ -1,9 +1,12 @@
 import React, { useState,useEffect, useRef } from 'react'
+import { BsChatFill } from 'react-icons/bs';
+import { IoIosCloseCircle } from 'react-icons/io';
 
 const ApplicationChat = () => {
     const [messages, setMessages] =useState([]);
     const [input, setInput] = useState()
     const chatEndRef = useRef()
+    const [isopen, setIsOpen] = useState(false)
     const [predefinedMessages, setPredefinedMessages] = useState([
         { text: 'How can I help you?', sender: 'bot' },
         { text: 'Track my order', sender: 'bot' },
@@ -75,46 +78,62 @@ const ApplicationChat = () => {
  }
 
   return (
-    <div  className="flex flex-col w-4/12 h-[400px] bg-gray-100 p-4">
-    <div  className=" relative flex-grow  overflow-y-scroll p-4 bg-white rounded-lg shadow-md">
-          {/* Display Predefined Messages */}
-       <div  className=" grid justify-end  gap-2 mb-4">
-          {predefinedMessages.map((message, index) => (
-            <button
-              key={index}
-              onClick={() => handlePredefinedClick(message.text)}
-              className="px-4 py-2 bg-gray-300 rounded-lg"
-            >
-              {message.text}
-            </button>
-          ))}
-        </div>
-      {messages.map((message, index) => (
-        <div ref={chatEndRef}  key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-2`}>
-          <div className={`max-w-xs p-2 rounded-lg ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}>
-            {message.text}
-          </div>
-        </div>
-      ))}
-     
-    </div >
-    <div className="flex mt-4">
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type your message..."
-        className="flex-grow p-2 border rounded-lg"
-      />
-      <button
-        onClick={sendMessage}
-        className="ml-2 p-2 bg-blue-500 text-white rounded-lg"
-      >
-        Send
+    <>
+     <button className="fixed bottom-24 right-0" onClick={() => setIsOpen(!isopen)}>
+        <BsChatFill size={40} color='red'/>
       </button>
-      <button className="ml-2 p-2 bg-blue-500 text-white rounded-lg" onClick={deletMessages}>Delete</button>
+    <div>
+        
     </div>
-  </div>
+    {
+        isopen && (
+            <div  className=" fixed right-0 bottom-24 flex flex-col w-4/12 h-[400px] bg-gray-100 p-4">
+                <button  onClick={() => setIsOpen(!isopen)}><IoIosCloseCircle/></button>
+            <div  className=" relative flex-grow  overflow-y-scroll p-4 bg-white rounded-lg shadow-md">
+                  {/* Display Predefined Messages */}
+               <div  className=" grid justify-end  gap-2 mb-4">
+                  {predefinedMessages.map((message, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handlePredefinedClick(message.text)}
+                      className="px-4 py-2 bg-gray-300 rounded-lg"
+                    >
+                      {message.text}
+                    </button>
+                  ))}
+                </div>
+              {messages.map((message, index) => (
+                <div ref={chatEndRef}  key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} mb-2`}>
+                  <div className={`max-w-xs p-2 rounded-lg ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}>
+                    {message.text}
+                  </div>
+                </div>
+              ))}
+             
+            </div >
+            <div className="flex mt-4">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your message..."
+                className="flex-grow p-2 border rounded-lg"
+              />
+              <button
+                onClick={sendMessage}
+                className="ml-2 p-2 bg-blue-500 text-white rounded-lg"
+              >
+                Send
+              </button>
+              <button className="ml-2 p-2 bg-blue-500 text-white rounded-lg" onClick={deletMessages}>Delete</button>
+            </div>
+          </div>
+        )
+    }
+    
+ 
+    </>
+ 
   )
 }
 
