@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { UserinfoContext } from '../Contexts/UserContext'
 import { getAuth, signOut } from "firebase/auth";
-import app  from "../firebase/firebase";
+import {app}  from "../firebase/firebase";
 
 const UserProfile = () => {
   const { user } = useContext(UserinfoContext);

@@ -4,7 +4,7 @@ import { AiFillGoogleSquare } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
 import { UserinfoContext } from "../../Contexts/UserContext";
 import { sendEmailVerification, updateProfile } from "firebase/auth";
-import app  from "../../firebase/firebase.js";
+import {app}  from "../../firebase/firebase.js";
 import { getAuth ,signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 const Register = () => {

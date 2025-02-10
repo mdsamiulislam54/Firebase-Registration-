@@ -5,7 +5,7 @@ import { FaGithub } from "react-icons/fa";
 import { getAuth, signInWithEmailAndPassword,updateProfile ,signInWithPopup, GoogleAuthProvider,sendPasswordResetEmail   } from "firebase/auth";
 import { UserinfoContext } from "../../Contexts/UserContext";
 
-import app  from "../../firebase/firebase.js";
+import {app}  from "../../firebase/firebase.js";
 import { useNavigate }  from "react-router";
 
 const Login = () => {
